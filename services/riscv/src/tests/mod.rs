@@ -61,7 +61,7 @@ fn test_deploy_and_run() {
     let mut service = TestRiscvService::new();
     let context = TestContext::default().make_admin();
 
-    let code = read_code!("src/tests/simple_storage");
+    let code = read_code!("src/tests_assemblyscript/simple_storage/build/optimized");
     let deploy_result = service!(service, deploy, context.clone(), DeployPayload {
         code:      code.clone(),
         intp_type: InterpreterType::Binary,
@@ -122,7 +122,7 @@ fn should_not_change_state_by_read_call() {
     let mut ctx = TestContext::default();
 
     let deployed = service!(service, deploy, ctx.make_admin(), DeployPayload {
-        code:      read_code!("src/tests/simple_storage"),
+        code:      read_code!("src/tests_assemblyscript/simple_storage/build/optimized"),
         intp_type: InterpreterType::Binary,
         init_args: "set k init".into(),
     });
@@ -154,7 +154,7 @@ fn should_not_change_state_through_read_write_chained_invocations() {
     let mut ctx = TestContext::default();
 
     let deployed = service!(service, deploy, ctx.make_admin(), DeployPayload {
-        code:      read_code!("src/tests/write_read"),
+        code:      read_code!("src/tests_assemblyscript/read_write/build/optimized"),
         intp_type: InterpreterType::Binary,
         init_args: "".into(),
     });
@@ -183,7 +183,7 @@ fn should_allow_change_state_through_write_write_chained_invocations() {
     let mut ctx = TestContext::default();
 
     let deployed = service!(service, deploy, ctx.make_admin(), DeployPayload {
-        code:      read_code!("src/tests/write_read"),
+        code:      read_code!("src/tests_assemblyscript/read_write/build/optimized"),
         intp_type: InterpreterType::Binary,
         init_args: "".into(),
     });
@@ -216,7 +216,7 @@ fn should_deny_deploy_contract_until_granted_when_authorization_enabled() {
     let mut service = TestRiscvService::new_restricted();
     let mut ctx = TestContext::default();
 
-    let code = read_code!("src/tests/simple_storage");
+    let code = read_code!("src/tests_assemblyscript/simple_storage/build/optimized");
     let deployed = service.deploy(ctx.make(), DeployPayload {
         code:      code.clone(),
         intp_type: InterpreterType::Binary,
@@ -259,7 +259,7 @@ fn should_require_admin_permission_to_revoke_deploy_auth() {
         addresses: vec![caller.clone()],
     });
 
-    let code = read_code!("src/tests/simple_storage");
+    let code = read_code!("src/tests_assemblyscript/simple_storage/build/optimized");
     let deployed = service.deploy(ctx.make(), DeployPayload {
         code:      code.clone(),
         intp_type: InterpreterType::Binary,
@@ -296,7 +296,7 @@ fn should_deny_exec_contract_until_approved_when_authorization_enabled() {
     let mut service = TestRiscvService::new_restricted();
     let mut ctx = TestContext::default();
 
-    let code = read_code!("src/tests/simple_storage");
+    let code = read_code!("src/tests_assemblyscript/simple_storage/build/optimized");
     let deployed = service!(service, deploy, ctx.make_admin(), DeployPayload {
         code,
         intp_type: InterpreterType::Binary,
@@ -327,7 +327,7 @@ fn should_return_contract_authorization_state_by_get_contract_api() {
     let mut service = TestRiscvService::new_restricted();
     let mut ctx = TestContext::default();
 
-    let code = read_code!("src/tests/simple_storage");
+    let code = read_code!("src/tests_assemblyscript/simple_storage/build/optimized");
     let deployed = service!(service, deploy, ctx.make_admin(), DeployPayload {
         code,
         intp_type: InterpreterType::Binary,
@@ -363,7 +363,7 @@ fn should_require_admin_permission_to_revoke_contracts() {
     let mut service = TestRiscvService::new_restricted();
     let mut ctx = TestContext::default();
 
-    let code = read_code!("src/tests/simple_storage");
+    let code = read_code!("src/tests_assemblyscript/simple_storage/build/optimized");
     let deployed = service!(service, deploy, ctx.make_admin(), DeployPayload {
         code,
         intp_type: InterpreterType::Binary,
@@ -397,7 +397,7 @@ fn should_require_admin_permission_to_approve_contracts() {
     let mut service = TestRiscvService::new_restricted();
     let mut ctx = TestContext::default();
 
-    let code = read_code!("src/tests/simple_storage");
+    let code = read_code!("src/tests_assemblyscript/simple_storage/build/optimized");
     let deployed = service!(service, deploy, ctx.make_admin(), DeployPayload {
         code,
         intp_type: InterpreterType::Binary,
@@ -430,7 +430,7 @@ fn should_count_cycles_on_failed_contract_execution() {
     // We use write_read contract, call c() should fail because
     // read call cannot change state.
     let deployed = service!(service, deploy, ctx.make_admin(), DeployPayload {
-        code:      read_code!("src/tests/write_read"),
+        code:      read_code!("src/tests_assemblyscript/read_write/build/optimized"),
         intp_type: InterpreterType::Binary,
         init_args: "".into(),
     });
@@ -454,7 +454,7 @@ fn should_also_return_assert_message_on_assert_failed() {
     let mut ctx = TestContext::default();
 
     let deployed = service!(service, deploy, ctx.make_admin(), DeployPayload {
-        code:      read_code!("src/tests/assert"),
+        code:      read_code!("src/tests_assemblyscript/assert/build/optimized"),
         intp_type: InterpreterType::Binary,
         init_args: "".into(),
     });

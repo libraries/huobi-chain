@@ -1,8 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use ckb_vm::machine::asm::{AsmCoreMachine, AsmMachine};
-use ckb_vm::{DefaultMachineBuilder, SupportMachine};
+use ckb_vm::SupportMachine;
 use derive_more::Constructor;
 
 use protocol::{
@@ -101,9 +100,12 @@ impl Interpreter {
         let err_resp = Rc::new(RefCell::new(None));
         let cycles_limit = self.context.get_cycles_limit();
 
-        let core_machine = AsmCoreMachine::new_with_max_cycles(cycles_limit);
-        let default_machine = DefaultMachineBuilder::<Box<AsmCoreMachine>>::new(core_machine)
-            .instruction_cycle_func(Box::new(vm::cost_model::instruction_cycles))
+        let core_machine =
+            ckb_vm::DefaultCoreMachine::<u64, ckb_vm::FlatMemory<u64>>::new_with_max_cycles(cycles_limit);
+        let mut machine = ckb_vm::DefaultMachineBuilder::<
+            ckb_vm::DefaultCoreMachine<u64, ckb_vm::FlatMemory<u64>>,
+        >::new(core_machine)
+        .instruction_cycle_func(Box::new(vm::cost_model::instruction_cycles))
             .syscall(Box::new(vm::SyscallDebug))
             .syscall(Box::new(vm::SyscallAssert::new(Rc::<_>::clone(&err_resp))))
             .syscall(Box::new(vm::SyscallEnvironment::new(
@@ -120,13 +122,9 @@ impl Interpreter {
             )))
             .build();
 
-        let mut machine = AsmMachine::new(default_machine, None);
-        if let Err(e) = machine.load_program(&code, &args[..]) {
-            return Err(Error::new(Cause::CkbVM(e), 0));
-        }
-
+        machine.load_program(&code, &args[1..]).unwrap();
         let maybe_exit_code = machine.run();
-        let cycles_used = machine.machine.cycles();
+        let cycles_used = machine.cycles();
 
         match maybe_exit_code {
             Ok(exit_code) => Ok(Exit {
