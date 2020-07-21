@@ -7,9 +7,9 @@
  (type $none_=>_i64 (func (result i64)))
  (type $i32_=>_none (func (param i32)))
  (type $i32_i32_i32_=>_none (func (param i32 i32 i32)))
+ (type $none_=>_none (func))
  (type $i64_i32_=>_i32 (func (param i64 i32) (result i32)))
  (type $i32_i64_i32_=>_none (func (param i32 i64 i32)))
- (type $none_=>_none (func))
  (type $i32_i32_i32_i32_=>_none (func (param i32 i32 i32 i32)))
  (type $i32_i64_i32_i32_=>_none (func (param i32 i64 i32 i32)))
  (type $i64_=>_none (func (param i64)))
@@ -82,8 +82,10 @@
  (global $assembly/env/SYSCODE_SERVICE_CALL i32 (i32.const 4003))
  (global $assembly/env/SYSCODE_SERVICE_WRITE i32 (i32.const 4004))
  (global $assembly/env/SYSCODE_SERVICE_READ i32 (i32.const 4005))
- (global $assembly/index/ERROR_METHOD_NOT_FOUND i32 (i32.const 69))
+ (global $assembly/env/BUF_SIZE i32 (i32.const 1024))
  (global $~lib/ASC_SHRINK_LEVEL i32 (i32.const 0))
+ (global $assembly/env/BUF (mut i32) (i32.const 0))
+ (global $assembly/index/ERROR_METHOD_NOT_FOUND i32 (i32.const 69))
  (global $~argumentsLength (mut i32) (i32.const 0))
  (global $~lib/builtins/u32.MAX_VALUE i32 (i32.const -1))
  (global $~lib/rt/__rtti_base i32 (i32.const 3104))
@@ -95,6 +97,7 @@
  (export "__collect" (func $~lib/rt/pure/__collect))
  (export "__rtti_base" (global $~lib/rt/__rtti_base))
  (export "_start" (func $assembly/index/_start))
+ (start $~start)
  (func $~lib/rt/tlsf/removeBlock (param $0 i32) (param $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -1897,6 +1900,15 @@
   local.set $0
   local.get $0
  )
+ (func $start:assembly/env
+  i32.const 0
+  global.get $assembly/env/BUF_SIZE
+  call $~lib/typedarray/Uint8Array#constructor
+  global.set $assembly/env/BUF
+ )
+ (func $start:assembly/index
+  call $start:assembly/env
+ )
  (func $~lib/typedarray/Uint8Array#get:length (param $0 i32) (result i32)
   local.get $0
   i32.load offset=8
@@ -3263,16 +3275,10 @@
   local.get $9
  )
  (func $assembly/env/pvmLoadArgs (result i32)
-  (local $0 i32)
-  (local $1 i64)
-  (local $2 i32)
-  i32.const 0
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.set $0
+  (local $0 i64)
   global.get $assembly/env/SYSCODE_LOAD_ARGS
   i64.extend_i32_s
-  local.get $0
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
   i64.const 0
@@ -3282,16 +3288,12 @@
   i64.const 0
   i64.const 32
   call $assembly/env/syscall
-  local.set $1
-  local.get $0
+  local.set $0
+  global.get $assembly/env/BUF
   i32.const 0
-  local.get $1
+  local.get $0
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
-  local.get $2
  )
  (func $~lib/arraybuffer/ArrayBuffer#get:byteLength (param $0 i32) (result i32)
   local.get $0
@@ -5308,16 +5310,10 @@
   call $assembly/env/syscall
  )
  (func $assembly/env/pvmOrigin (result i32)
-  (local $0 i32)
-  (local $1 i64)
-  (local $2 i32)
-  i32.const 0
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.set $0
+  (local $0 i64)
   global.get $assembly/env/SYSCODE_ORIGIN
   i64.extend_i32_s
-  local.get $0
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
   i64.const 0
@@ -5327,28 +5323,18 @@
   i64.const 0
   i64.const 32
   call $assembly/env/syscall
-  local.set $1
-  local.get $0
+  local.set $0
+  global.get $assembly/env/BUF
   i32.const 0
-  local.get $1
+  local.get $0
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
-  local.get $2
  )
  (func $assembly/env/pvmCaller (result i32)
-  (local $0 i32)
-  (local $1 i64)
-  (local $2 i32)
-  i32.const 0
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.set $0
+  (local $0 i64)
   global.get $assembly/env/SYSCODE_CALLER
   i64.extend_i32_s
-  local.get $0
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
   i64.const 0
@@ -5358,28 +5344,18 @@
   i64.const 0
   i64.const 32
   call $assembly/env/syscall
-  local.set $1
-  local.get $0
+  local.set $0
+  global.get $assembly/env/BUF
   i32.const 0
-  local.get $1
+  local.get $0
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
-  local.get $2
  )
  (func $assembly/env/pvmAddress (result i32)
-  (local $0 i32)
-  (local $1 i64)
-  (local $2 i32)
-  i32.const 0
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.set $0
+  (local $0 i64)
   global.get $assembly/env/SYSCODE_ADDRESS
   i64.extend_i32_s
-  local.get $0
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
   i64.const 0
@@ -5389,16 +5365,12 @@
   i64.const 0
   i64.const 32
   call $assembly/env/syscall
-  local.set $1
-  local.get $0
+  local.set $0
+  global.get $assembly/env/BUF
   i32.const 0
-  local.get $1
+  local.get $0
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
-  local.get $2
  )
  (func $assembly/env/pvmBlockHeight (result i64)
   global.get $assembly/env/SYSCODE_BLOCK_HEIGHT
@@ -5413,16 +5385,10 @@
   call $assembly/env/syscall
  )
  (func $assembly/env/pvmExtra (result i32)
-  (local $0 i32)
-  (local $1 i64)
-  (local $2 i32)
-  i32.const 0
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.set $0
+  (local $0 i64)
   global.get $assembly/env/SYSCODE_EXTRA
   i64.extend_i32_s
-  local.get $0
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
   i64.const 0
@@ -5432,16 +5398,12 @@
   i64.const 0
   i64.const 32
   call $assembly/env/syscall
-  local.set $1
-  local.get $0
+  local.set $0
+  global.get $assembly/env/BUF
   i32.const 0
-  local.get $1
+  local.get $0
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
-  local.get $2
  )
  (func $assembly/env/pvmTimestamp (result i64)
   global.get $assembly/env/SYSCODE_TIMESTAMP
@@ -5499,16 +5461,10 @@
   call $~lib/rt/pure/__release
  )
  (func $assembly/env/pvmTxHash (result i32)
-  (local $0 i32)
-  (local $1 i64)
-  (local $2 i32)
-  i32.const 0
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.set $0
+  (local $0 i64)
   global.get $assembly/env/SYSCODE_TX_HASH
   i64.extend_i32_s
-  local.get $0
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
   i64.const 0
@@ -5518,28 +5474,18 @@
   i64.const 0
   i64.const 32
   call $assembly/env/syscall
-  local.set $1
-  local.get $0
+  local.set $0
+  global.get $assembly/env/BUF
   i32.const 0
-  local.get $1
+  local.get $0
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
-  local.get $2
  )
  (func $assembly/env/pvmTxNonce (result i32)
-  (local $0 i32)
-  (local $1 i64)
-  (local $2 i32)
-  i32.const 0
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.set $0
+  (local $0 i64)
   global.get $assembly/env/SYSCODE_TX_NONCE
   i64.extend_i32_s
-  local.get $0
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
   i64.const 0
@@ -5549,16 +5495,12 @@
   i64.const 0
   i64.const 32
   call $assembly/env/syscall
-  local.set $1
-  local.get $0
+  local.set $0
+  global.get $assembly/env/BUF
   i32.const 0
-  local.get $1
+  local.get $0
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
-  local.get $2
  )
  (func $assembly/index/_start (result i64)
   (local $0 i32)
@@ -5786,6 +5728,9 @@
   local.get $1
   call $~lib/rt/pure/__release
   local.get $3
+ )
+ (func $~start
+  call $start:assembly/index
  )
  (func $~lib/rt/pure/__collect
   i32.const 1

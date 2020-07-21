@@ -5,9 +5,9 @@
  (type $i32_=>_i32 (func (param i32) (result i32)))
  (type $i32_=>_none (func (param i32)))
  (type $i32_i32_i32_=>_none (func (param i32 i32 i32)))
+ (type $none_=>_none (func))
  (type $none_=>_i32 (func (result i32)))
  (type $i32_i32_i32_i32_=>_i32 (func (param i32 i32 i32 i32) (result i32)))
- (type $none_=>_none (func))
  (type $i32_i32_i32_i32_=>_none (func (param i32 i32 i32 i32)))
  (type $i32_i32_i32_i32_i32_=>_i32 (func (param i32 i32 i32 i32 i32) (result i32)))
  (type $none_=>_i64 (func (result i64)))
@@ -18,9 +18,9 @@
  (data (i32.const 16) "\1e\00\00\00\01\00\00\00\01\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00")
  (data (i32.const 64) "(\00\00\00\01\00\00\00\01\00\00\00(\00\00\00a\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00")
  (data (i32.const 128) "\1e\00\00\00\01\00\00\00\01\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00p\00u\00r\00e\00.\00t\00s\00")
- (data (i32.const 176) "z\00\00\00\01\00\00\00\01\00\00\00z\00\00\00w\00r\00o\00n\00g\00 \00a\00r\00g\00s\00,\00 \00s\00h\00o\00u\00l\00d\00 \00b\00e\00 \00l\00i\00k\00e\00 \00\'\00s\00e\00t\00 \00[\00k\00e\00y\00]\00 \00[\00v\00a\00l\00u\00e\00]\00\'\00 \00o\00r\00 \00\'\00g\00e\00t\00 \00[\00k\00e\00y\00]\00\'\00")
- (data (i32.const 320) "\1c\00\00\00\01\00\00\00\01\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
- (data (i32.const 368) "&\00\00\00\01\00\00\00\01\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s\00")
+ (data (i32.const 176) "\1c\00\00\00\01\00\00\00\01\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
+ (data (i32.const 224) "&\00\00\00\01\00\00\00\01\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s\00")
+ (data (i32.const 288) "z\00\00\00\01\00\00\00\01\00\00\00z\00\00\00w\00r\00o\00n\00g\00 \00a\00r\00g\00s\00,\00 \00s\00h\00o\00u\00l\00d\00 \00b\00e\00 \00l\00i\00k\00e\00 \00\'\00s\00e\00t\00 \00[\00k\00e\00y\00]\00 \00[\00v\00a\00l\00u\00e\00]\00\'\00 \00o\00r\00 \00\'\00g\00e\00t\00 \00[\00k\00e\00y\00]\00\'\00")
  (data (i32.const 432) "\1c\00\00\00\01\00\00\00\01\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
  (data (i32.const 480) "\02\00\00\00\01\00\00\00\01\00\00\00\02\00\00\00 \00")
  (data (i32.const 512) "\00\00\00\00\01\00\00\00\01\00\00\00\00\00\00\00")
@@ -61,8 +61,10 @@
  (global $assembly/env/SYSCODE_SERVICE_CALL i32 (i32.const 4003))
  (global $assembly/env/SYSCODE_SERVICE_WRITE i32 (i32.const 4004))
  (global $assembly/env/SYSCODE_SERVICE_READ i32 (i32.const 4005))
- (global $assembly/index/errMessage i32 (i32.const 192))
+ (global $assembly/env/BUF_SIZE i32 (i32.const 1024))
  (global $~lib/ASC_SHRINK_LEVEL i32 (i32.const 0))
+ (global $assembly/env/BUF (mut i32) (i32.const 0))
+ (global $assembly/index/errMessage i32 (i32.const 304))
  (global $~lib/builtins/i32.MAX_VALUE i32 (i32.const 2147483647))
  (global $~argumentsLength (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 976))
@@ -74,6 +76,7 @@
  (export "__collect" (func $~lib/rt/pure/__collect))
  (export "__rtti_base" (global $~lib/rt/__rtti_base))
  (export "_start" (func $assembly/index/_start))
+ (start $~start)
  (func $~lib/rt/tlsf/removeBlock (param $0 i32) (param $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -1816,8 +1819,8 @@
   i32.shr_u
   i32.gt_u
   if
-   i32.const 336
-   i32.const 384
+   i32.const 192
+   i32.const 240
    i32.const 18
    i32.const 57
    call $~lib/builtins/abort
@@ -1875,6 +1878,15 @@
   call $~lib/arraybuffer/ArrayBufferView#constructor
   local.set $0
   local.get $0
+ )
+ (func $start:assembly/env
+  i32.const 0
+  global.get $assembly/env/BUF_SIZE
+  call $~lib/typedarray/Uint8Array#constructor
+  global.set $assembly/env/BUF
+ )
+ (func $start:assembly/index
+  call $start:assembly/env
  )
  (func $~lib/typedarray/Uint8Array#get:length (param $0 i32) (result i32)
   local.get $0
@@ -3242,16 +3254,10 @@
   local.get $9
  )
  (func $assembly/env/pvmLoadArgs (result i32)
-  (local $0 i32)
-  (local $1 i64)
-  (local $2 i32)
-  i32.const 0
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.set $0
+  (local $0 i64)
   global.get $assembly/env/SYSCODE_LOAD_ARGS
   i64.extend_i32_s
-  local.get $0
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
   i64.const 0
@@ -3261,16 +3267,12 @@
   i64.const 0
   i64.const 32
   call $assembly/env/syscall
-  local.set $1
-  local.get $0
+  local.set $0
+  global.get $assembly/env/BUF
   i32.const 0
-  local.get $1
+  local.get $0
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
-  local.get $2
  )
  (func $~lib/arraybuffer/ArrayBuffer#get:byteLength (param $0 i32) (result i32)
   local.get $0
@@ -3993,7 +3995,7 @@
    i32.shr_u
    i32.gt_u
    if
-    i32.const 336
+    i32.const 192
     i32.const 544
     i32.const 14
     i32.const 48
@@ -4786,7 +4788,7 @@
     i32.const 0
     i32.and
     if
-     i32.const 336
+     i32.const 192
      i32.const 656
      i32.const 1746
      i32.const 9
@@ -4798,7 +4800,7 @@
     i32.sub
     local.set $6
    else
-    i32.const 336
+    i32.const 192
     i32.const 656
     i32.const 1750
     i32.const 7
@@ -4816,7 +4818,7 @@
    local.get $7
    i32.gt_s
    if
-    i32.const 336
+    i32.const 192
     i32.const 656
     i32.const 1755
     i32.const 7
@@ -5097,16 +5099,11 @@
   call $~lib/rt/pure/__release
  )
  (func $assembly/env/pvmGetStorage (param $0 i32) (result i32)
-  (local $1 i32)
-  (local $2 i64)
-  (local $3 i32)
+  (local $1 i64)
+  (local $2 i32)
   local.get $0
   call $~lib/rt/pure/__retain
   local.set $0
-  i32.const 0
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.set $1
   global.get $assembly/env/SYSCODE_GET_STORAGE
   i64.extend_i32_s
   local.get $0
@@ -5115,28 +5112,26 @@
   local.get $0
   i32.load offset=8
   i64.extend_i32_s
-  local.get $1
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
-  local.get $1
+  global.get $assembly/env/BUF
   i32.load offset=8
   i64.extend_i32_s
   i64.const 0
   i64.const 0
   i64.const 40
   call $assembly/env/syscall
-  local.set $2
-  local.get $1
+  local.set $1
+  global.get $assembly/env/BUF
   i32.const 0
-  local.get $2
+  local.get $1
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $3
+  local.set $2
   local.get $0
   call $~lib/rt/pure/__release
-  local.get $1
-  call $~lib/rt/pure/__release
-  local.get $3
+  local.get $2
  )
  (func $assembly/index/_start (result i64)
   (local $0 i32)
@@ -5315,6 +5310,9 @@
   local.get $4
   call $~lib/rt/pure/__release
   local.get $3
+ )
+ (func $~start
+  call $start:assembly/index
  )
  (func $~lib/rt/pure/__collect
   i32.const 1

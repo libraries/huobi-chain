@@ -125,6 +125,7 @@ impl Interpreter {
         machine.load_program(&code, &args[1..]).unwrap();
         let maybe_exit_code = machine.run();
         let cycles_used = machine.cycles();
+        println!("cycles_used {:?}", cycles_used);
 
         match maybe_exit_code {
             Ok(exit_code) => Ok(Exit {

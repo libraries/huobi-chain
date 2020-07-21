@@ -1,6 +1,7 @@
 // System call provides the services of the blockchain to the user dapp via Application Program Interface(API).
 export declare function syscall(n: i64, a: i64, b: i64, c: i64, d: i64, e: i64, f: i64, mode: i64): i64
 
+// System call code
 const SYSCODE_DEBUG = 2000
 const SYSCODE_LOAD_ARGS = 2001
 const SYSCODE_RET = 2002
@@ -25,6 +26,11 @@ const SYSCODE_SERVICE_CALL = 4003
 const SYSCODE_SERVICE_WRITE = 4004
 const SYSCODE_SERVICE_READ = 4005
 
+// The maximum length allowed for a data exchange with the host environment
+const BUF_SIZE = 1024
+// Although it is const, it is allowed to be modified by the host
+const BUF = new Uint8Array(BUF_SIZE)
+
 export function pvmDebug(msg: string): void {
     let strEncoded = String.UTF8.encode(msg, true)
     syscall(SYSCODE_DEBUG, changetype<usize>(strEncoded), 0, 0, 0, 0, 0, 0b100000)
@@ -36,9 +42,8 @@ export function pvmAssert(statement: boolean, msg: string): void {
 }
 
 export function pvmLoadArgs(): Uint8Array {
-    let r = new Uint8Array(1024);
-    let l = syscall(SYSCODE_LOAD_ARGS, changetype<usize>(r.buffer), 0, 0, 0, 0, 0, 0b100000)
-    return r.slice(0, i32(l))
+    let l = syscall(SYSCODE_LOAD_ARGS, changetype<usize>(BUF.buffer), 0, 0, 0, 0, 0, 0b100000)
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmRet(data: Uint8Array): void {
@@ -58,21 +63,18 @@ export function pvmCyclePrice(): i64 {
 }
 
 export function pvmOrigin(): Uint8Array {
-    let r = new Uint8Array(1024)
-    let l = syscall(SYSCODE_ORIGIN, changetype<usize>(r.buffer), 0, 0, 0, 0, 0, 0b100000)
-    return r.slice(0, i32(l))
+    let l = syscall(SYSCODE_ORIGIN, changetype<usize>(BUF.buffer), 0, 0, 0, 0, 0, 0b100000)
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmCaller(): Uint8Array {
-    let r = new Uint8Array(1024)
-    let l = syscall(SYSCODE_CALLER, changetype<usize>(r.buffer), 0, 0, 0, 0, 0, 0b100000)
-    return r.slice(0, i32(l))
+    let l = syscall(SYSCODE_CALLER, changetype<usize>(BUF.buffer), 0, 0, 0, 0, 0, 0b100000)
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmAddress(): Uint8Array {
-    let r = new Uint8Array(1024)
-    let l = syscall(SYSCODE_ADDRESS, changetype<usize>(r.buffer), 0, 0, 0, 0, 0, 0b100000)
-    return r.slice(0, i32(l))
+    let l = syscall(SYSCODE_ADDRESS, changetype<usize>(BUF.buffer), 0, 0, 0, 0, 0, 0b100000)
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmIsInit(): i64 {
@@ -84,9 +86,8 @@ export function pvmBlockHeight(): i64 {
 }
 
 export function pvmExtra(): Uint8Array {
-    let r = new Uint8Array(1024)
-    let l = syscall(SYSCODE_EXTRA, changetype<usize>(r.buffer), 0, 0, 0, 0, 0, 0b100000)
-    return r.slice(0, i32(l))
+    let l = syscall(SYSCODE_EXTRA, changetype<usize>(BUF.buffer), 0, 0, 0, 0, 0, 0b100000)
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmTimestamp(): i64 {
@@ -100,30 +101,27 @@ export function pvmEmitEvent(name: string, event: string): void {
 }
 
 export function pvmTxHash(): Uint8Array {
-    let r = new Uint8Array(1024)
-    let l = syscall(SYSCODE_TX_HASH, changetype<usize>(r.buffer), 0, 0, 0, 0, 0, 0b100000)
-    return r.slice(0, i32(l))
+    let l = syscall(SYSCODE_TX_HASH, changetype<usize>(BUF.buffer), 0, 0, 0, 0, 0, 0b100000)
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmTxNonce(): Uint8Array {
-    let r = new Uint8Array(1024)
-    let l = syscall(SYSCODE_TX_NONCE, changetype<usize>(r.buffer), 0, 0, 0, 0, 0, 0b100000)
-    return r.slice(0, i32(l))
+    let l = syscall(SYSCODE_TX_NONCE, changetype<usize>(BUF.buffer), 0, 0, 0, 0, 0, 0b100000)
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmGetStorage(k: Uint8Array): Uint8Array {
-    var r = new Uint8Array(1024)
     let l = syscall(
         SYSCODE_GET_STORAGE,
         changetype<usize>(k.buffer),
         k.byteLength,
-        changetype<usize>(r.buffer),
-        r.byteLength,
+        changetype<usize>(BUF.buffer),
+        BUF.byteLength,
         0,
         0,
         0b101000
     )
-    return r.slice(0, i32(l))
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmSetStorage(k: Uint8Array, v: Uint8Array): void {
@@ -140,72 +138,68 @@ export function pvmSetStorage(k: Uint8Array, v: Uint8Array): void {
 }
 
 export function pvmContractCall(addr: Uint8Array, args: Uint8Array): Uint8Array {
-    var r = new Uint8Array(1024)
     let l = syscall(
         SYSCODE_CONTRACT_CALL,
         changetype<usize>(addr.buffer),
         changetype<usize>(args.buffer),
         args.byteLength,
-        changetype<usize>(r.buffer),
+        changetype<usize>(BUF.buffer),
         0,
         0,
         0b110100
     )
-    return r.slice(0, i32(l))
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmServiceCall(service: string, method: string, payload: Uint8Array): Uint8Array {
     let serviceEncoded = String.UTF8.encode(service, true)
     let methodEncoded = String.UTF8.encode(method, true)
-    var r = new Uint8Array(1024)
     let l = syscall(
         SYSCODE_SERVICE_CALL,
         changetype<usize>(serviceEncoded),
         changetype<usize>(methodEncoded),
         changetype<usize>(payload.buffer),
         payload.byteLength,
-        changetype<usize>(r.buffer),
+        changetype<usize>(BUF.buffer),
         0,
         0b111010
     )
-    return r.slice(0, i32(l))
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmServiceWrite(service: string, method: string, payload: Uint8Array): Uint8Array {
     let serviceEncoded = String.UTF8.encode(service, true)
     let methodEncoded = String.UTF8.encode(method, true)
-    var r = new Uint8Array(1024)
     let l = syscall(
         SYSCODE_SERVICE_WRITE,
         changetype<usize>(serviceEncoded),
         changetype<usize>(methodEncoded),
         changetype<usize>(payload.buffer),
         payload.byteLength,
-        changetype<usize>(r.buffer),
+        changetype<usize>(BUF.buffer),
         0,
         0b111010
     )
-    return r.slice(0, i32(l))
+    return BUF.slice(0, i32(l))
 }
 
 export function pvmServiceRead(service: string, method: string, payload: Uint8Array): Uint8Array {
     let serviceEncoded = String.UTF8.encode(service, true)
     let methodEncoded = String.UTF8.encode(method, true)
-    var r = new Uint8Array(1024)
     let l = syscall(
         SYSCODE_SERVICE_READ,
         changetype<usize>(serviceEncoded),
         changetype<usize>(methodEncoded),
         changetype<usize>(payload.buffer),
         payload.byteLength,
-        changetype<usize>(r.buffer),
+        changetype<usize>(BUF.buffer),
         0,
         0b111010
     )
-    return r.slice(0, i32(l))
+    return BUF.slice(0, i32(l))
 }
 
-// Extend
+// More helpful functions. It's not a main part of the muta dapp sdk.
 export function pvmRetStr(data: string): void {
     pvmRet(Uint8Array.wrap(String.UTF8.encode(data, true)));
 }

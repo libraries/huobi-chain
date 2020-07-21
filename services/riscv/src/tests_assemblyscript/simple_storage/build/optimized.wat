@@ -3,8 +3,8 @@
  (type $i32_=>_i32 (func (param i32) (result i32)))
  (type $i32_=>_none (func (param i32)))
  (type $i32_i32_=>_none (func (param i32 i32)))
- (type $i32_i32_i32_=>_none (func (param i32 i32 i32)))
  (type $none_=>_none (func))
+ (type $i32_i32_i32_=>_none (func (param i32 i32 i32)))
  (type $i32_i32_i32_i32_=>_none (func (param i32 i32 i32 i32)))
  (type $i32_i32_i32_=>_i32 (func (param i32 i32 i32) (result i32)))
  (type $none_=>_i32 (func (result i32)))
@@ -17,9 +17,9 @@
  (data (i32.const 1024) "\1e\00\00\00\01\00\00\00\01\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s")
  (data (i32.const 1072) "(\00\00\00\01\00\00\00\01\00\00\00(\00\00\00a\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e")
  (data (i32.const 1136) "\1e\00\00\00\01\00\00\00\01\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00p\00u\00r\00e\00.\00t\00s")
- (data (i32.const 1184) "z\00\00\00\01\00\00\00\01\00\00\00z\00\00\00w\00r\00o\00n\00g\00 \00a\00r\00g\00s\00,\00 \00s\00h\00o\00u\00l\00d\00 \00b\00e\00 \00l\00i\00k\00e\00 \00\'\00s\00e\00t\00 \00[\00k\00e\00y\00]\00 \00[\00v\00a\00l\00u\00e\00]\00\'\00 \00o\00r\00 \00\'\00g\00e\00t\00 \00[\00k\00e\00y\00]\00\'")
- (data (i32.const 1328) "\1c\00\00\00\01\00\00\00\01\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h")
- (data (i32.const 1376) "&\00\00\00\01\00\00\00\01\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s")
+ (data (i32.const 1184) "\1c\00\00\00\01\00\00\00\01\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h")
+ (data (i32.const 1232) "&\00\00\00\01\00\00\00\01\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s")
+ (data (i32.const 1296) "z\00\00\00\01\00\00\00\01\00\00\00z\00\00\00w\00r\00o\00n\00g\00 \00a\00r\00g\00s\00,\00 \00s\00h\00o\00u\00l\00d\00 \00b\00e\00 \00l\00i\00k\00e\00 \00\'\00s\00e\00t\00 \00[\00k\00e\00y\00]\00 \00[\00v\00a\00l\00u\00e\00]\00\'\00 \00o\00r\00 \00\'\00g\00e\00t\00 \00[\00k\00e\00y\00]\00\'")
  (data (i32.const 1440) "\1c\00\00\00\01\00\00\00\01\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s")
  (data (i32.const 1488) "\02\00\00\00\01\00\00\00\01\00\00\00\02\00\00\00 ")
  (data (i32.const 1524) "\01\00\00\00\01")
@@ -34,6 +34,7 @@
  (data (i32.const 1984) "\06\00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00a\00\00\00\02\00\00\00\"A\00\00\00\00\00\00\"\t")
  (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
  (global $~lib/rt/tlsf/collectLock (mut i32) (i32.const 0))
+ (global $assembly/env/BUF (mut i32) (i32.const 0))
  (global $~argumentsLength (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 1984))
  (export "memory" (memory $0))
@@ -43,6 +44,7 @@
  (export "__collect" (func $~lib/rt/pure/__collect))
  (export "__rtti_base" (global $~lib/rt/__rtti_base))
  (export "_start" (func $assembly/index/_start))
+ (start $~start)
  (func $~lib/rt/tlsf/removeBlock (param $0 i32) (param $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -1309,8 +1311,8 @@
   i32.const 1073741808
   i32.gt_u
   if
-   i32.const 1344
-   i32.const 1392
+   i32.const 1200
+   i32.const 1248
    i32.const 18
    i32.const 57
    call $~lib/builtins/abort
@@ -2160,7 +2162,7 @@
    i32.const 268435452
    i32.gt_u
    if
-    i32.const 1344
+    i32.const 1200
     i32.const 1552
     i32.const 14
     i32.const 48
@@ -2729,7 +2731,7 @@
    if (result i32)
     local.get $2
    else
-    i32.const 1344
+    i32.const 1200
     i32.const 1664
     i32.const 1750
     i32.const 7
@@ -2743,7 +2745,7 @@
    local.get $2
    i32.gt_s
    if
-    i32.const 1344
+    i32.const 1200
     i32.const 1664
     i32.const 1755
     i32.const 7
@@ -2819,7 +2821,7 @@
  (func $assembly/env/pvmRetStr
   (local $0 i32)
   (local $1 i32)
-  i32.const 1200
+  i32.const 1312
   i32.const 1
   call $~lib/string/String.UTF8.encode
   local.set $0
@@ -2833,7 +2835,7 @@
   call $~lib/rt/pure/__release
   local.get $1
   call $~lib/rt/pure/__release
-  i32.const 1200
+  i32.const 1312
   call $~lib/rt/pure/__release
  )
  (func $~lib/array/Array<~lib/string/String>#__get (param $0 i32) (param $1 i32) (result i32)
@@ -2951,14 +2953,12 @@
   (local $6 i32)
   (local $7 i32)
   (local $8 i32)
-  (local $9 i32)
+  (local $9 i64)
   (local $10 i32)
   (local $11 i32)
-  i32.const 1024
-  call $~lib/typedarray/Uint8Array#constructor
-  local.tee $0
+  (local $12 i32)
   i64.const 2001
-  local.get $0
+  global.get $assembly/env/BUF
   i32.load
   i64.extend_i32_u
   i64.const 0
@@ -2968,12 +2968,12 @@
   i64.const 0
   i64.const 32
   call $assembly/env/syscall
+  local.set $9
+  global.get $assembly/env/BUF
+  local.get $9
   i32.wrap_i64
   call $~lib/typedarray/Uint8Array#slice
-  local.set $4
-  local.get $0
-  call $~lib/rt/pure/__release
-  local.get $4
+  local.tee $6
   i32.load
   call $~lib/rt/pure/__retain
   local.tee $0
@@ -2995,7 +2995,7 @@
   i32.lt_s
   if
    call $assembly/env/pvmRetStr
-   local.get $4
+   local.get $6
    call $~lib/rt/pure/__release
    local.get $1
    call $~lib/rt/pure/__release
@@ -3007,7 +3007,7 @@
   local.get $0
   i32.const 0
   call $~lib/array/Array<~lib/string/String>#__get
-  local.tee $9
+  local.tee $10
   i32.const 1840
   call $~lib/string/String.__eq
   if
@@ -3017,13 +3017,13 @@
    i32.ne
    if
     call $assembly/env/pvmRetStr
-    local.get $4
+    local.get $6
     call $~lib/rt/pure/__release
     local.get $1
     call $~lib/rt/pure/__release
     local.get $0
     call $~lib/rt/pure/__release
-    local.get $9
+    local.get $10
     call $~lib/rt/pure/__release
     i64.const 1
     return
@@ -3031,19 +3031,19 @@
    local.get $0
    i32.const 1
    call $~lib/array/Array<~lib/string/String>#__get
-   local.tee $10
+   local.tee $11
    i32.const 0
    call $~lib/string/String.UTF8.encode
-   local.set $5
+   local.set $4
    i32.const 1
    global.set $~argumentsLength
-   local.get $5
+   local.get $4
    call $~lib/typedarray/Uint8Array.wrap@varargs
-   local.set $6
+   local.set $5
    local.get $0
    i32.const 2
    call $~lib/array/Array<~lib/string/String>#__get
-   local.tee $11
+   local.tee $12
    i32.const 0
    call $~lib/string/String.UTF8.encode
    local.set $7
@@ -3052,7 +3052,7 @@
    local.get $7
    call $~lib/typedarray/Uint8Array.wrap@varargs
    local.set $8
-   local.get $6
+   local.get $5
    call $~lib/rt/pure/__retain
    local.set $2
    local.get $8
@@ -3082,13 +3082,13 @@
    call $~lib/rt/pure/__release
    i32.const 1872
    call $assembly/env/pvmDebug
-   local.get $10
+   local.get $11
+   call $~lib/rt/pure/__release
+   local.get $4
    call $~lib/rt/pure/__release
    local.get $5
    call $~lib/rt/pure/__release
-   local.get $6
-   call $~lib/rt/pure/__release
-   local.get $11
+   local.get $12
    call $~lib/rt/pure/__release
    local.get $7
    call $~lib/rt/pure/__release
@@ -3098,90 +3098,92 @@
    local.get $0
    i32.const 0
    call $~lib/array/Array<~lib/string/String>#__get
-   local.tee $5
+   local.tee $2
    i32.const 1920
    call $~lib/string/String.__eq
    if
     local.get $0
     i32.const 1
     call $~lib/array/Array<~lib/string/String>#__get
-    local.tee $8
+    local.tee $7
     i32.const 0
     call $~lib/string/String.UTF8.encode
-    local.set $6
+    local.set $3
     i32.const 1
     global.set $~argumentsLength
-    local.get $6
-    call $~lib/typedarray/Uint8Array.wrap@varargs
-    local.tee $10
-    call $~lib/rt/pure/__retain
-    local.set $2
-    i32.const 1024
-    call $~lib/typedarray/Uint8Array#constructor
-    local.tee $3
     i64.const 4000
-    local.get $2
+    local.get $3
+    call $~lib/typedarray/Uint8Array.wrap@varargs
+    local.tee $8
+    call $~lib/rt/pure/__retain
+    local.tee $4
     i32.load
     i64.extend_i32_u
-    local.get $2
+    local.get $4
     i32.load offset=8
     i64.extend_i32_s
-    local.get $3
+    global.get $assembly/env/BUF
     i32.load
     i64.extend_i32_u
-    local.get $3
+    global.get $assembly/env/BUF
     i32.load offset=8
     i64.extend_i32_s
     i64.const 0
     i64.const 0
     i64.const 40
     call $assembly/env/syscall
+    local.set $9
+    global.get $assembly/env/BUF
+    local.get $9
     i32.wrap_i64
     call $~lib/typedarray/Uint8Array#slice
-    local.set $7
-    local.get $2
+    local.set $5
+    local.get $4
     call $~lib/rt/pure/__release
-    local.get $3
-    call $~lib/rt/pure/__release
-    local.get $7
+    local.get $5
     call $assembly/env/pvmRet
     i32.const 1952
     call $assembly/env/pvmDebug
+    local.get $7
+    call $~lib/rt/pure/__release
+    local.get $3
+    call $~lib/rt/pure/__release
     local.get $8
     call $~lib/rt/pure/__release
-    local.get $6
-    call $~lib/rt/pure/__release
-    local.get $10
-    call $~lib/rt/pure/__release
-    local.get $7
+    local.get $5
     call $~lib/rt/pure/__release
    else
     call $assembly/env/pvmRetStr
-    local.get $4
+    local.get $6
     call $~lib/rt/pure/__release
     local.get $1
     call $~lib/rt/pure/__release
     local.get $0
     call $~lib/rt/pure/__release
-    local.get $9
+    local.get $10
     call $~lib/rt/pure/__release
-    local.get $5
+    local.get $2
     call $~lib/rt/pure/__release
     i64.const 1
     return
    end
-   local.get $5
+   local.get $2
    call $~lib/rt/pure/__release
   end
-  local.get $4
+  local.get $6
   call $~lib/rt/pure/__release
   local.get $1
   call $~lib/rt/pure/__release
   local.get $0
   call $~lib/rt/pure/__release
-  local.get $9
+  local.get $10
   call $~lib/rt/pure/__release
   i64.const 0
+ )
+ (func $~start
+  i32.const 1024
+  call $~lib/typedarray/Uint8Array#constructor
+  global.set $assembly/env/BUF
  )
  (func $~lib/rt/pure/__collect
   nop
